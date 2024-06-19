@@ -1,0 +1,17 @@
+name: Reusable Print Message  # Name of the reusable workflow
+
+on:
+  workflow_call:  # Define the workflow as reusable
+    inputs:  # Inputs that can be passed to the workflow
+      message:  # Define an input parameter named 'message'
+        required: true  # The 'message' input is required
+        type: string  # The 'message' input should be of type string
+
+jobs:
+  print-message:
+    runs-on: ubuntu-latest  # Specify the OS for the job
+
+    steps:
+    # Step to print the message passed to the workflow
+      - name: Print message  
+        run: echo "Hi, this message is from primary workflow"  # Command to print the message

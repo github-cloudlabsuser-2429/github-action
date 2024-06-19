@@ -1,0 +1,40 @@
+name: Build and Push Docker Image to ACR  # Name of the workflow
+
+on:
+  push:  # Trigger the workflow on push events
+    branches:
+      - main  # Only trigger on pushes to the main branch
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest  # Specify the OS for the job
+
+    steps:
+    # Checkout the repository
+    - name: Checkout repository  # Step to check out the code from the repository
+      uses: actions/checkout@v2  # Use the checkout action
+
+    # Log in to Azure
+    - name: Log in to Azure CLI  # Step to log in to Azure CLI
+      uses: azure/login@v1  # Use the Azure login action
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}  # Use Azure credentials stored in GitHub secrets
+
+    # List files in the current directory
+    - name: List files  # Step to list files in the current directory
+      run: ls -la  # Command to list files
+
+    # Build Docker image
+    - name: Build Docker image  # Step to build the Docker image
+      run: |
+        docker buildx build . -t {Login_server}/my-app:latest  # Build the Docker image and tag it
+
+    # Log in to Azure Container Registry
+    - name: Log in to Azure Container Registry  # Step to log in to ACR
+      run: |
+        az acr login --name {Registry name}  # Log in to Azure Container Registry
+
+    # Push Docker image to Azure Container Registry
+    - name: Push Docker image  # Step to push the Docker image to ACR
+      run: |
+        docker push {Login_server}/my-app:latest  # Push the Docker image to ACR
